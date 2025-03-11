@@ -16,6 +16,7 @@ from gnuradio import blocks
 import pmt
 from gnuradio import digital
 from gnuradio import filter
+from gnuradio import fec
 from gnuradio import gr
 from gnuradio.filter import firdes
 from gnuradio.fft import window
@@ -67,7 +68,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.sps = sps = 8
+        self.sps = sps = 4
         self.qpsk = qpsk = digital.constellation_rect([0.707+0.707j, -0.707+0.707j, -0.707-0.707j, 0.707-0.707j], [0, 1, 2, 3],
         4, 2, 2, 1, 1).base()
         self.nfilts = nfilts = 32
@@ -80,7 +81,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
         self.phase_bw = phase_bw = 0.0628
         self.hdr_format = hdr_format = digital.header_format_default(access_key, 0)
         self.excess_bw = excess_bw = 0.3
-        self.RF_F_S = RF_F_S = 1000000
+        self.RF_F_S = RF_F_S = 500000
         self.LO_freq = LO_freq = 2400000000
 
         ##################################################
@@ -101,7 +102,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
 
         self.qtgui_time_sink_x_0_0_1.enable_tags(True)
         self.qtgui_time_sink_x_0_0_1.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_0_1.enable_autoscale(False)
+        self.qtgui_time_sink_x_0_0_1.enable_autoscale(True)
         self.qtgui_time_sink_x_0_0_1.enable_grid(False)
         self.qtgui_time_sink_x_0_0_1.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_0_1.enable_control_panel(False)
@@ -149,7 +150,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
 
         self.qtgui_time_sink_x_0_0_0_0.enable_tags(True)
         self.qtgui_time_sink_x_0_0_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_0_0_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_0_0_0_0.enable_autoscale(True)
         self.qtgui_time_sink_x_0_0_0_0.enable_grid(False)
         self.qtgui_time_sink_x_0_0_0_0.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_0_0_0.enable_control_panel(False)
@@ -197,7 +198,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
 
         self.qtgui_time_sink_x_0_0_0.enable_tags(True)
         self.qtgui_time_sink_x_0_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_0_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_0_0_0.enable_autoscale(True)
         self.qtgui_time_sink_x_0_0_0.enable_grid(False)
         self.qtgui_time_sink_x_0_0_0.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_0_0.enable_control_panel(False)
@@ -245,7 +246,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
 
         self.qtgui_time_sink_x_0_0.enable_tags(True)
         self.qtgui_time_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_0_0.enable_autoscale(True)
         self.qtgui_time_sink_x_0_0.enable_grid(False)
         self.qtgui_time_sink_x_0_0.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_0.enable_control_panel(False)
@@ -293,7 +294,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
 
         self.qtgui_time_sink_x_0.enable_tags(True)
         self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_0.enable_autoscale(True)
         self.qtgui_time_sink_x_0.enable_grid(False)
         self.qtgui_time_sink_x_0.enable_axis_labels(True)
         self.qtgui_time_sink_x_0.enable_control_panel(False)
@@ -327,6 +328,39 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
+        self.qtgui_number_sink_0 = qtgui.number_sink(
+            gr.sizeof_float,
+            0,
+            qtgui.NUM_GRAPH_NONE,
+            1,
+            None # parent
+        )
+        self.qtgui_number_sink_0.set_update_time(0.10)
+        self.qtgui_number_sink_0.set_title("BER")
+
+        labels = ['', '', '', '', '',
+            '', '', '', '', '']
+        units = ['', '', '', '', '',
+            '', '', '', '', '']
+        colors = [("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"),
+            ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black")]
+        factor = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+
+        for i in range(1):
+            self.qtgui_number_sink_0.set_min(i, -1)
+            self.qtgui_number_sink_0.set_max(i, 1)
+            self.qtgui_number_sink_0.set_color(i, colors[i][0], colors[i][1])
+            if len(labels[i]) == 0:
+                self.qtgui_number_sink_0.set_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_number_sink_0.set_label(i, labels[i])
+            self.qtgui_number_sink_0.set_unit(i, units[i])
+            self.qtgui_number_sink_0.set_factor(i, factor[i])
+
+        self.qtgui_number_sink_0.enable_autoscale(False)
+        self._qtgui_number_sink_0_win = sip.wrapinstance(self.qtgui_number_sink_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_number_sink_0_win)
         self.qtgui_freq_sink_x_1 = qtgui.freq_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
@@ -410,7 +444,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
-        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 32768)
+        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 65536)
         self.iio_pluto_source_0.set_len_tag_key('packet_len')
         self.iio_pluto_source_0.set_frequency(LO_freq)
         self.iio_pluto_source_0.set_samplerate(RF_F_S)
@@ -420,13 +454,14 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
         self.iio_pluto_source_0.set_rfdc(True)
         self.iio_pluto_source_0.set_bbdc(True)
         self.iio_pluto_source_0.set_filter_params('Auto', '', 0, 0)
-        self.iio_pluto_sink_0 = iio.fmcomms2_sink_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 32768, False)
+        self.iio_pluto_sink_0 = iio.fmcomms2_sink_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 65536, False)
         self.iio_pluto_sink_0.set_len_tag_key('')
-        self.iio_pluto_sink_0.set_bandwidth(20000000)
+        self.iio_pluto_sink_0.set_bandwidth(1200000)
         self.iio_pluto_sink_0.set_frequency(LO_freq)
         self.iio_pluto_sink_0.set_samplerate(RF_F_S)
         self.iio_pluto_sink_0.set_attenuation(0, 0)
         self.iio_pluto_sink_0.set_filter_params('Auto', '', 0, 0)
+        self.fec_ber_bf_0 = fec.ber_bf(False, 100, -7.0)
         self.digital_symbol_sync_xx_0 = digital.symbol_sync_cc(
             digital.TED_SIGNAL_TIMES_SLOPE_ML,
             sps,
@@ -463,7 +498,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
         self.blocks_uchar_to_float_0_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
         self.blocks_tagged_stream_mux_0 = blocks.tagged_stream_mux(gr.sizeof_char*1, 'packet_len', 0)
-        self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, 1024, "packet_len")
+        self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, 256, "packet_len")
         self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(1, 8, "", False, gr.GR_MSB_FIRST)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/nicklasj/skole/VÅR2025/TTT4145_Radiokommunikasjon/TTT4145/hello.txt', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
@@ -476,8 +511,10 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_uchar_to_float_0_0_1, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.fec_ber_bf_0, 0))
         self.connect((self.blocks_repack_bits_bb_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_repack_bits_bb_0, 0), (self.blocks_uchar_to_float_0_0_0, 0))
+        self.connect((self.blocks_repack_bits_bb_0, 0), (self.fec_ber_bf_0, 1))
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.blocks_tagged_stream_mux_0, 1))
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.digital_protocol_formatter_bb_0, 0))
         self.connect((self.blocks_tagged_stream_mux_0, 0), (self.digital_constellation_modulator_0, 0))
@@ -500,6 +537,7 @@ class PLUTO_TRX(gr.top_block, Qt.QWidget):
         self.connect((self.digital_map_bb_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
         self.connect((self.digital_protocol_formatter_bb_0, 0), (self.blocks_tagged_stream_mux_0, 0))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.digital_linear_equalizer_0, 0))
+        self.connect((self.fec_ber_bf_0, 0), (self.qtgui_number_sink_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.digital_symbol_sync_xx_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.qtgui_freq_sink_x_1, 0))
 

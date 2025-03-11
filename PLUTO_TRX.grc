@@ -229,7 +229,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 1156.0]
+    coordinate: [1160, 1156.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -251,7 +251,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [32, 212.0]
+    coordinate: [32, 228.0]
     rotation: 0
     state: true
 - name: blocks_message_debug_0
@@ -362,7 +362,7 @@ blocks:
     bus_structure: null
     coordinate: [984, 784.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_uchar_to_float_0_0
   id: blocks_uchar_to_float
   parameters:
@@ -377,7 +377,7 @@ blocks:
     bus_structure: null
     coordinate: [408, 1080.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_uchar_to_float_0_0_0
   id: blocks_uchar_to_float
   parameters:
@@ -392,7 +392,7 @@ blocks:
     bus_structure: null
     coordinate: [1064, 1272.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_uchar_to_float_0_0_0_0
   id: blocks_uchar_to_float
   parameters:
@@ -407,7 +407,7 @@ blocks:
     bus_structure: null
     coordinate: [792, 1384.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_uchar_to_float_0_0_1
   id: blocks_uchar_to_float
   parameters:
@@ -493,9 +493,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [544, 1156.0]
+    coordinate: [480, 1164.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: digital_costas_loop_cc_0
   id: digital_costas_loop_cc
   parameters:
@@ -612,6 +612,24 @@ blocks:
     coordinate: [288, 628.0]
     rotation: 0
     state: enabled
+- name: fec_ber_bf_0
+  id: fec_ber_bf
+  parameters:
+    affinity: ''
+    alias: ''
+    berlimit: '-7.0'
+    berminerrors: '100'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    test_mode: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1344, 960.0]
+    rotation: 0
+    state: true
 - name: iio_pluto_sink_0
   id: iio_pluto_sink
   parameters:
@@ -637,7 +655,7 @@ blocks:
     bus_structure: null
     coordinate: [976, 364.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: iio_pluto_source_0
   id: iio_pluto_source
   parameters:
@@ -854,6 +872,69 @@ blocks:
     bus_structure: null
     coordinate: [248, 508.0]
     rotation: 0
+    state: enabled
+- name: qtgui_number_sink_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_NONE
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '1'
+    min: '-1'
+    name: '"BER"'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1536, 940.0]
+    rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
   id: qtgui_time_sink_x
@@ -870,7 +951,7 @@ blocks:
     alpha7: '1.0'
     alpha8: '1.0'
     alpha9: '1.0'
-    autoscale: 'False'
+    autoscale: 'True'
     axislabels: 'True'
     color1: blue
     color10: dark blue
@@ -951,7 +1032,7 @@ blocks:
     bus_structure: null
     coordinate: [1160, 764.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: qtgui_time_sink_x_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -967,7 +1048,7 @@ blocks:
     alpha7: '1.0'
     alpha8: '1.0'
     alpha9: '1.0'
-    autoscale: 'False'
+    autoscale: 'True'
     axislabels: 'True'
     color1: blue
     color10: dark blue
@@ -1048,7 +1129,7 @@ blocks:
     bus_structure: null
     coordinate: [592, 1052.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: qtgui_time_sink_x_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -1064,7 +1145,7 @@ blocks:
     alpha7: '1.0'
     alpha8: '1.0'
     alpha9: '1.0'
-    autoscale: 'False'
+    autoscale: 'True'
     axislabels: 'True'
     color1: blue
     color10: dark blue
@@ -1145,7 +1226,7 @@ blocks:
     bus_structure: null
     coordinate: [1264, 1244.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: qtgui_time_sink_x_0_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -1161,7 +1242,7 @@ blocks:
     alpha7: '1.0'
     alpha8: '1.0'
     alpha9: '1.0'
-    autoscale: 'False'
+    autoscale: 'True'
     axislabels: 'True'
     color1: blue
     color10: dark blue
@@ -1242,7 +1323,7 @@ blocks:
     bus_structure: null
     coordinate: [984, 1356.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: qtgui_time_sink_x_0_0_1
   id: qtgui_time_sink_x
   parameters:
@@ -1258,7 +1339,7 @@ blocks:
     alpha7: '1.0'
     alpha8: '1.0'
     alpha9: '1.0'
-    autoscale: 'False'
+    autoscale: 'True'
     axislabels: 'True'
     color1: blue
     color10: dark blue
@@ -1392,6 +1473,19 @@ blocks:
     coordinate: [1096, 244.0]
     rotation: 0
     state: enabled
+- name: virtual_sink_3
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: ber_true
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [328, 308.0]
+    rotation: 0
+    state: true
 - name: virtual_source_0
   id: virtual_source
   parameters:
@@ -1444,16 +1538,31 @@ blocks:
     coordinate: [48, 1172.0]
     rotation: 0
     state: enabled
+- name: virtual_source_2
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: ber_true
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1104, 956.0]
+    rotation: 0
+    state: true
 
 connections:
 - [blocks_file_source_0, '0', blocks_stream_to_tagged_stream_0, '0']
 - [blocks_file_source_0, '0', blocks_uchar_to_float_0_0_1, '0']
+- [blocks_file_source_0, '0', virtual_sink_3, '0']
 - [blocks_probe_rate_0, rate, blocks_message_debug_0, log]
 - [blocks_probe_rate_0, rate, blocks_message_debug_0, print]
 - [blocks_probe_rate_0, rate, blocks_message_debug_0, print_pdu]
 - [blocks_probe_rate_0, rate, blocks_message_debug_0, store]
 - [blocks_repack_bits_bb_0, '0', blocks_file_sink_0, '0']
 - [blocks_repack_bits_bb_0, '0', blocks_uchar_to_float_0_0_0, '0']
+- [blocks_repack_bits_bb_0, '0', fec_ber_bf_0, '1']
 - [blocks_stream_to_tagged_stream_0, '0', digital_protocol_formatter_bb_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', virtual_sink_2, '0']
 - [blocks_tagged_stream_mux_0, '0', digital_constellation_modulator_0, '0']
@@ -1477,12 +1586,14 @@ connections:
 - [digital_map_bb_0, '0', virtual_sink_1, '0']
 - [digital_protocol_formatter_bb_0, '0', virtual_sink_2_0, '0']
 - [digital_symbol_sync_xx_0, '0', digital_linear_equalizer_0, '0']
+- [fec_ber_bf_0, '0', qtgui_number_sink_0, '0']
 - [iio_pluto_source_0, '0', digital_symbol_sync_xx_0, '0']
 - [iio_pluto_source_0, '0', qtgui_freq_sink_x_1, '0']
 - [virtual_source_0, '0', digital_costas_loop_cc_0, '0']
 - [virtual_source_0_0, '0', blocks_tagged_stream_mux_0, '0']
 - [virtual_source_0_0_0, '0', blocks_tagged_stream_mux_0, '1']
 - [virtual_source_1, '0', blocks_unpack_k_bits_bb_0, '0']
+- [virtual_source_2, '0', fec_ber_bf_0, '0']
 
 metadata:
   file_format: 1
