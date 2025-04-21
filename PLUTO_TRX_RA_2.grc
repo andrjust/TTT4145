@@ -49,7 +49,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '500000'
+    value: '264000'
   states:
     bus_sink: false
     bus_source: false
@@ -66,7 +66,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [760, 4.0]
+    coordinate: [1176, 4.0]
     rotation: 0
     state: enabled
 - name: excess_bw
@@ -90,7 +90,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [760, 68.0]
+    coordinate: [1176, 68.0]
     rotation: 0
     state: enabled
 - name: nfilts
@@ -158,14 +158,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 12]
+    coordinate: [200, 12.0]
     rotation: 0
     state: enabled
 - name: sps
   id: variable
   parameters:
     comment: ''
-    value: '4'
+    value: '8'
   states:
     bus_sink: false
     bus_source: false
@@ -210,7 +210,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 108.0]
+    coordinate: [0, 236.0]
     rotation: 0
     state: disabled
 - name: audio_sink_0
@@ -227,7 +227,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1936, 1164.0]
+    coordinate: [2088, 1180.0]
     rotation: 0
     state: enabled
 - name: audio_source_0
@@ -263,7 +263,7 @@ blocks:
     low_cutoff_freq: '300'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samp_rate: samp_rate
+    samp_rate: '8000'
     type: fir_filter_fff
     width: '200'
     win: window.WIN_HAMMING
@@ -298,7 +298,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /mnt/c/Users/raner/Downloads/output.txt
+    file: /mnt/c/Users/raner/Radiokommunikasjon/ReceivedText.txt
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -309,6 +309,60 @@ blocks:
     coordinate: [1400, 1244.0]
     rotation: 0
     state: enabled
+- name: blocks_file_sink_0_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /mnt/c/Users/raner/Radiokommunikasjon/TransmitText.txt
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [928, 332.0]
+    rotation: 0
+    state: enabled
+- name: blocks_file_sink_1
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /mnt/c/Users/raner/Radiokommunikasjon/TTT4145/output.txt
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1648, 68.0]
+    rotation: 0
+    state: disabled
+- name: blocks_file_sink_1_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /mnt/c/Users/raner/Radiokommunikasjon/TTT4145/output.txt
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [632, 340.0]
+    rotation: 0
+    state: disabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -316,7 +370,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /mnt/c/Users/raner/Downloads/input.txt
+    file: /mnt/c/Users/raner/Radiokommunikasjon/TransmitText.txt
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -328,7 +382,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [32, 348.0]
+    coordinate: [24, 348.0]
     rotation: 0
     state: disabled
 - name: blocks_float_to_char_0
@@ -345,7 +399,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 252.0]
+    coordinate: [768, 244.0]
+    rotation: 0
+    state: enabled
+- name: blocks_keep_one_in_n_0
+  id: blocks_keep_one_in_n
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: '6'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 152.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_const_vxx_0
@@ -363,7 +435,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 260.0]
+    coordinate: [568, 204.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_const_vxx_0_0
@@ -401,7 +473,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 228.0]
+    coordinate: [1384, 228.0]
     rotation: 0
     state: enabled
 - name: blocks_repack_bits_bb_0_0_0
@@ -421,7 +493,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 260.0]
+    coordinate: [992, 260.0]
     rotation: 0
     state: enabled
 - name: blocks_repack_bits_bb_0_1
@@ -460,7 +532,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 140.0]
+    coordinate: [872, 132.0]
     rotation: 0
     state: enabled
 - name: blocks_tagged_stream_mux_0
@@ -675,7 +747,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [760, 148.0]
+    coordinate: [1176, 148.0]
     rotation: 0
     state: enabled
 - name: digital_scrambler_bb_0
@@ -693,7 +765,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 220.0]
+    coordinate: [1216, 220.0]
     rotation: 0
     state: enabled
 - name: digital_symbol_sync_xx_0
@@ -714,7 +786,7 @@ blocks:
     resamp_type: digital.IR_PFB_MF
     sps: sps
     ted_gain: '1.0'
-    ted_type: digital.TED_SIGNAL_TIMES_SLOPE_ML
+    ted_type: digital.TED_GARDNER
     type: cc
   states:
     bus_sink: false
@@ -778,6 +850,30 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [64, 780.0]
+    rotation: 0
+    state: enabled
+- name: low_pass_filter_0
+  id: low_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: '4000'
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: '48000'
+    type: interp_fir_filter_fff
+    width: '1000'
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [208, 148.0]
     rotation: 0
     state: enabled
 - name: qtgui_const_sink_x_0
@@ -1066,6 +1162,26 @@ blocks:
     coordinate: [1960, 1260.0]
     rotation: 0
     state: disabled
+- name: rational_resampler_xxx_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '1'
+    fbw: '0'
+    interp: '6'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[]'
+    type: fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1888, 1100.0]
+    rotation: 0
+    state: enabled
 - name: virtual_sink_0
   id: virtual_sink
   parameters:
@@ -1102,7 +1218,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1184, 236.0]
+    coordinate: [1600, 236.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_2_0
@@ -1115,7 +1231,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1296, 156.0]
+    coordinate: [1712, 156.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_3
@@ -1128,7 +1244,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 36.0]
+    coordinate: [872, 28.0]
     rotation: 0
     state: disabled
 - name: virtual_source_0
@@ -1200,13 +1316,15 @@ blocks:
 connections:
 - [analog_sig_source_x_0, '0', blocks_multiply_const_vxx_0, '0']
 - [analog_sig_source_x_0, '0', virtual_sink_3, '0']
-- [audio_source_0, '0', blocks_multiply_const_vxx_0, '0']
+- [audio_source_0, '0', low_pass_filter_0, '0']
 - [audio_source_0, '0', virtual_sink_3, '0']
-- [band_pass_filter_0, '0', audio_sink_0, '0']
 - [band_pass_filter_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0, '0']
+- [band_pass_filter_0, '0', rational_resampler_xxx_0, '0']
 - [blocks_char_to_float_0, '0', blocks_multiply_const_vxx_0_0, '0']
 - [blocks_file_source_0, '0', blocks_stream_to_tagged_stream_0, '0']
+- [blocks_float_to_char_0, '0', blocks_file_sink_0_0, '0']
 - [blocks_float_to_char_0, '0', blocks_stream_to_tagged_stream_0, '0']
+- [blocks_keep_one_in_n_0, '0', blocks_multiply_const_vxx_0, '0']
 - [blocks_multiply_const_vxx_0, '0', blocks_float_to_char_0, '0']
 - [blocks_multiply_const_vxx_0_0, '0', band_pass_filter_0, '0']
 - [blocks_multiply_const_vxx_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0, '0']
@@ -1216,6 +1334,7 @@ connections:
 - [blocks_repack_bits_bb_0_1, '0', blocks_file_sink_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', blocks_repack_bits_bb_0_0_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', digital_protocol_formatter_bb_0, '0']
+- [blocks_tagged_stream_mux_0, '0', blocks_file_sink_1_0, '0']
 - [blocks_tagged_stream_mux_0, '0', digital_constellation_modulator_0, '0']
 - [blocks_uchar_to_float_0_0_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0, '0']
 - [blocks_unpack_k_bits_bb_0, '0', digital_correlate_access_code_xx_ts_0, '0']
@@ -1229,10 +1348,13 @@ connections:
 - [digital_diff_decoder_bb_1, '0', digital_map_bb_0, '0']
 - [digital_linear_equalizer_0, '0', virtual_sink_0, '0']
 - [digital_map_bb_0, '0', virtual_sink_1, '0']
+- [digital_protocol_formatter_bb_0, '0', blocks_file_sink_1, '0']
 - [digital_protocol_formatter_bb_0, '0', virtual_sink_2_0, '0']
 - [digital_scrambler_bb_0, '0', blocks_repack_bits_bb_0_0, '0']
 - [digital_symbol_sync_xx_0, '0', digital_linear_equalizer_0, '0']
 - [iio_pluto_source_0, '0', digital_symbol_sync_xx_0, '0']
+- [low_pass_filter_0, '0', blocks_keep_one_in_n_0, '0']
+- [rational_resampler_xxx_0, '0', audio_sink_0, '0']
 - [virtual_source_0, '0', digital_costas_loop_cc_0, '0']
 - [virtual_source_0_0, '0', blocks_tagged_stream_mux_0, '0']
 - [virtual_source_0_0_0, '0', blocks_tagged_stream_mux_0, '1']

@@ -64,7 +64,7 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.sps = sps = 4
+        self.sps = sps = 8
         self.qpsk = qpsk = digital.constellation_rect([0.707+0.707j, -0.707+0.707j, -0.707-0.707j, 0.707-0.707j], [0, 1, 2, 3],
         4, 2, 2, 1, 1).base()
         self.nfilts = nfilts = 32
@@ -75,13 +75,18 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         self.phase_bw = phase_bw = 0.0628
         self.hdr_format = hdr_format = digital.header_format_default(access_key, 0)
         self.excess_bw = excess_bw = 0.3
-        self.RF_F_S = RF_F_S = 500000
+        self.RF_F_S = RF_F_S = 264000
         self.LO_freq = LO_freq = 2400000000
 
         ##################################################
         # Blocks
         ##################################################
 
+        self.rational_resampler_xxx_0 = filter.rational_resampler_fff(
+                interpolation=6,
+                decimation=1,
+                taps=[],
+                fractional_bw=0)
         self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
             1024, #size
             '', #name
@@ -123,6 +128,15 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
+        self.low_pass_filter_0 = filter.interp_fir_filter_fff(
+            1,
+            firdes.low_pass(
+                1,
+                48000,
+                4000,
+                1000,
+                window.WIN_HAMMING,
+                6.76))
         self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 65536)
         self.iio_pluto_source_0.set_len_tag_key('packet_len')
         self.iio_pluto_source_0.set_frequency(LO_freq)
@@ -141,7 +155,7 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         self.iio_pluto_sink_0.set_attenuation(0, 0)
         self.iio_pluto_sink_0.set_filter_params('Auto', '', 0, 0)
         self.digital_symbol_sync_xx_0 = digital.symbol_sync_cc(
-            digital.TED_SIGNAL_TIMES_SLOPE_ML,
+            digital.TED_GARDNER,
             sps,
             phase_bw,
             1.0,
@@ -179,15 +193,18 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         self.blocks_repack_bits_bb_0_0 = blocks.repack_bits_bb(1, 8, "", False, gr.GR_MSB_FIRST)
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff((1/255))
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(255)
+        self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_float*1, 6)
         self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/mnt/c/Users/raner/Downloads/output.txt', False)
+        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_char*1, '/mnt/c/Users/raner/Radiokommunikasjon/TransmitText.txt', False)
+        self.blocks_file_sink_0_0.set_unbuffered(False)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/mnt/c/Users/raner/Radiokommunikasjon/ReceivedText.txt', False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.band_pass_filter_0 = filter.fir_filter_fff(
             1,
             firdes.band_pass(
                 1,
-                samp_rate,
+                8000,
                 300,
                 3400,
                 200,
@@ -200,10 +217,12 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.audio_source_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.band_pass_filter_0, 0), (self.audio_sink_0, 0))
+        self.connect((self.audio_source_0, 0), (self.low_pass_filter_0, 0))
+        self.connect((self.band_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.blocks_char_to_float_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))
+        self.connect((self.blocks_float_to_char_0, 0), (self.blocks_file_sink_0_0, 0))
         self.connect((self.blocks_float_to_char_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_float_to_char_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.band_pass_filter_0, 0))
         self.connect((self.blocks_repack_bits_bb_0_0, 0), (self.blocks_tagged_stream_mux_0, 1))
@@ -227,6 +246,8 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         self.connect((self.digital_scrambler_bb_0, 0), (self.blocks_repack_bits_bb_0_0, 0))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.digital_linear_equalizer_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.digital_symbol_sync_xx_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.audio_sink_0, 0))
 
 
     def closeEvent(self, event):
@@ -277,7 +298,6 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate, 300, 3400, 200, window.WIN_HAMMING, 6.76))
 
     def get_rrc_taps(self):
         return self.rrc_taps
