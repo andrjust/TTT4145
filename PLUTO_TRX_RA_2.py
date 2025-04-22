@@ -11,8 +11,9 @@
 
 from PyQt5 import Qt
 from gnuradio import qtgui
-from gnuradio import audio
 from gnuradio import blocks
+import pmt
+from gnuradio import blocks, gr
 from gnuradio import digital
 from gnuradio import filter
 from gnuradio.filter import firdes
@@ -73,8 +74,9 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 32000
         self.rrc_taps = rrc_taps = firdes.root_raised_cosine(nfilts, nfilts, 1.0/float(sps), 0.35, 11*sps*nfilts)
         self.phase_bw = phase_bw = 0.0628
+        self.hdr_format_0 = hdr_format_0 = digital.header_format_counter(access_key, 0, 2)
         self.hdr_format = hdr_format = digital.header_format_default(access_key, 0)
-        self.excess_bw = excess_bw = 0.3
+        self.excess_bw = excess_bw = 1
         self.RF_F_S = RF_F_S = 264000
         self.LO_freq = LO_freq = 2400000000
 
@@ -82,6 +84,32 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
+        self.root_raised_cosine_filter_0_0 = filter.fir_filter_ccf(
+            1,
+            firdes.root_raised_cosine(
+                1,
+                264000,
+                33000,
+                1,
+                32))
+        self.root_raised_cosine_filter_0 = filter.interp_fir_filter_ccf(
+            8,
+            firdes.root_raised_cosine(
+                8,
+                264000,
+                33000,
+                1,
+                32))
+        self.rational_resampler_xxx_0_0_0 = filter.rational_resampler_fff(
+                interpolation=1,
+                decimation=15,
+                taps=[],
+                fractional_bw=0)
+        self.rational_resampler_xxx_0_0 = filter.rational_resampler_fff(
+                interpolation=16,
+                decimation=1,
+                taps=[],
+                fractional_bw=0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_fff(
                 interpolation=6,
                 decimation=1,
@@ -128,15 +156,6 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
-        self.low_pass_filter_0 = filter.interp_fir_filter_fff(
-            1,
-            firdes.low_pass(
-                1,
-                48000,
-                4000,
-                1000,
-                window.WIN_HAMMING,
-                6.76))
         self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 65536)
         self.iio_pluto_source_0.set_len_tag_key('packet_len')
         self.iio_pluto_source_0.set_frequency(LO_freq)
@@ -147,7 +166,7 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         self.iio_pluto_source_0.set_rfdc(True)
         self.iio_pluto_source_0.set_bbdc(True)
         self.iio_pluto_source_0.set_filter_params('Auto', '', 0, 0)
-        self.iio_pluto_sink_0 = iio.fmcomms2_sink_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 65536, False)
+        self.iio_pluto_sink_0 = iio.fmcomms2_sink_fc32('ip:192.168.2.1' if 'ip:192.168.2.1' else iio.get_pluto_uri(), [True, True], 264000, False)
         self.iio_pluto_sink_0.set_len_tag_key('')
         self.iio_pluto_sink_0.set_bandwidth(1200000)
         self.iio_pluto_sink_0.set_frequency(LO_freq)
@@ -170,84 +189,73 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
         self.digital_protocol_formatter_bb_0 = digital.protocol_formatter_bb(hdr_format, "packet_len")
         self.digital_map_bb_0 = digital.map_bb([0, 1, 2, 3])
         self.digital_linear_equalizer_0 = digital.linear_equalizer(15, 1, variable_adaptive_algorithm_0, True, [ ], 'corr_est')
+        self.digital_fll_band_edge_cc_0 = digital.fll_band_edge_cc(8, 1, 64, phase_bw)
+        self.digital_diff_encoder_bb_0 = digital.diff_encoder_bb(4, digital.DIFF_DIFFERENTIAL)
         self.digital_diff_decoder_bb_1 = digital.diff_decoder_bb(4, digital.DIFF_DIFFERENTIAL)
         self.digital_descrambler_bb_0 = digital.descrambler_bb(0x8A, 0x7F, 7)
         self.digital_costas_loop_cc_0 = digital.costas_loop_cc(phase_bw, 4, False)
         self.digital_correlate_access_code_xx_ts_0 = digital.correlate_access_code_bb_ts( '11100001010110101110100010010011',
           0, 'packet_len')
-        self.digital_constellation_modulator_0 = digital.generic_mod(
-            constellation=qpsk,
-            differential=True,
-            samples_per_symbol=sps,
-            pre_diff_code=True,
-            excess_bw=excess_bw,
-            verbose=False,
-            log=False,
-            truncate=False)
+        self.digital_constellation_encoder_bc_0 = digital.constellation_encoder_bc(qpsk)
         self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(qpsk)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(2)
         self.blocks_tagged_stream_mux_0 = blocks.tagged_stream_mux(gr.sizeof_char*1, 'packet_len', 0)
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, 256, "packet_len")
         self.blocks_repack_bits_bb_0_1 = blocks.repack_bits_bb(1, 8, "", False, gr.GR_MSB_FIRST)
+        self.blocks_repack_bits_bb_0_0_0_0 = blocks.repack_bits_bb(8, 1, "", False, gr.GR_MSB_FIRST)
         self.blocks_repack_bits_bb_0_0_0 = blocks.repack_bits_bb(8, 1, "", False, gr.GR_MSB_FIRST)
         self.blocks_repack_bits_bb_0_0 = blocks.repack_bits_bb(1, 8, "", False, gr.GR_MSB_FIRST)
+        self.blocks_probe_rate_0 = blocks.probe_rate(gr.sizeof_float*1, 500.0, 0.15, '')
+        self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(2)
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff((1/255))
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(255)
-        self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_float*1, 6)
-        self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
+        self.blocks_message_debug_0 = blocks.message_debug(True, gr.log_levels.info)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/mnt/c/Users/raner/Radiokommunikasjon/TransmitMessage.txt', False, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+        self.blocks_file_sink_0_1 = blocks.file_sink(gr.sizeof_char*1, '/mnt/c/Users/raner/Radiokommunikasjon/ReceivedText.txt', False)
+        self.blocks_file_sink_0_1.set_unbuffered(False)
         self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_char*1, '/mnt/c/Users/raner/Radiokommunikasjon/TransmitText.txt', False)
         self.blocks_file_sink_0_0.set_unbuffered(False)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/mnt/c/Users/raner/Radiokommunikasjon/ReceivedText.txt', False)
-        self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
-        self.band_pass_filter_0 = filter.fir_filter_fff(
-            1,
-            firdes.band_pass(
-                1,
-                8000,
-                300,
-                3400,
-                200,
-                window.WIN_HAMMING,
-                6.76))
-        self.audio_source_0 = audio.source(48000, '', True)
-        self.audio_sink_0 = audio.sink(48000, '', True)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.audio_source_0, 0), (self.low_pass_filter_0, 0))
-        self.connect((self.band_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.msg_connect((self.blocks_probe_rate_0, 'rate'), (self.blocks_message_debug_0, 'log'))
         self.connect((self.blocks_char_to_float_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))
-        self.connect((self.blocks_float_to_char_0, 0), (self.blocks_file_sink_0_0, 0))
-        self.connect((self.blocks_float_to_char_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))
-        self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_float_to_char_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.band_pass_filter_0, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.blocks_file_sink_0_0, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.digital_diff_encoder_bb_0, 0))
         self.connect((self.blocks_repack_bits_bb_0_0, 0), (self.blocks_tagged_stream_mux_0, 1))
         self.connect((self.blocks_repack_bits_bb_0_0_0, 0), (self.digital_scrambler_bb_0, 0))
+        self.connect((self.blocks_repack_bits_bb_0_0_0_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
         self.connect((self.blocks_repack_bits_bb_0_1, 0), (self.blocks_char_to_float_0, 0))
-        self.connect((self.blocks_repack_bits_bb_0_1, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.blocks_repack_bits_bb_0_1, 0), (self.blocks_file_sink_0_1, 0))
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.blocks_repack_bits_bb_0_0_0, 0))
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.digital_protocol_formatter_bb_0, 0))
-        self.connect((self.blocks_tagged_stream_mux_0, 0), (self.digital_constellation_modulator_0, 0))
+        self.connect((self.blocks_tagged_stream_mux_0, 0), (self.blocks_repack_bits_bb_0_0_0_0, 0))
         self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.digital_correlate_access_code_xx_ts_0, 0))
         self.connect((self.digital_constellation_decoder_cb_0, 0), (self.digital_diff_decoder_bb_1, 0))
-        self.connect((self.digital_constellation_modulator_0, 0), (self.iio_pluto_sink_0, 0))
+        self.connect((self.digital_constellation_encoder_bc_0, 0), (self.root_raised_cosine_filter_0, 0))
         self.connect((self.digital_correlate_access_code_xx_ts_0, 0), (self.digital_descrambler_bb_0, 0))
         self.connect((self.digital_costas_loop_cc_0, 0), (self.digital_constellation_decoder_cb_0, 0))
         self.connect((self.digital_costas_loop_cc_0, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.digital_descrambler_bb_0, 0), (self.blocks_repack_bits_bb_0_1, 0))
         self.connect((self.digital_diff_decoder_bb_1, 0), (self.digital_map_bb_0, 0))
+        self.connect((self.digital_diff_encoder_bb_0, 0), (self.digital_constellation_encoder_bc_0, 0))
+        self.connect((self.digital_fll_band_edge_cc_0, 0), (self.root_raised_cosine_filter_0_0, 0))
         self.connect((self.digital_linear_equalizer_0, 0), (self.digital_costas_loop_cc_0, 0))
         self.connect((self.digital_map_bb_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
         self.connect((self.digital_protocol_formatter_bb_0, 0), (self.blocks_tagged_stream_mux_0, 0))
         self.connect((self.digital_scrambler_bb_0, 0), (self.blocks_repack_bits_bb_0_0, 0))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.digital_linear_equalizer_0, 0))
-        self.connect((self.iio_pluto_source_0, 0), (self.digital_symbol_sync_xx_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.blocks_keep_one_in_n_0, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.audio_sink_0, 0))
+        self.connect((self.iio_pluto_source_0, 0), (self.digital_fll_band_edge_cc_0, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.rational_resampler_xxx_0_0, 0))
+        self.connect((self.rational_resampler_xxx_0_0, 0), (self.rational_resampler_xxx_0_0_0, 0))
+        self.connect((self.rational_resampler_xxx_0_0_0, 0), (self.blocks_probe_rate_0, 0))
+        self.connect((self.root_raised_cosine_filter_0, 0), (self.iio_pluto_sink_0, 0))
+        self.connect((self.root_raised_cosine_filter_0_0, 0), (self.digital_symbol_sync_xx_0, 0))
 
 
     def closeEvent(self, event):
@@ -272,6 +280,7 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
     def set_qpsk(self, qpsk):
         self.qpsk = qpsk
         self.digital_constellation_decoder_cb_0.set_constellation(self.qpsk)
+        self.digital_constellation_encoder_bc_0.set_constellation(self.qpsk)
 
     def get_nfilts(self):
         return self.nfilts
@@ -286,6 +295,7 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
     def set_access_key(self, access_key):
         self.access_key = access_key
         self.set_hdr_format(digital.header_format_default(self.access_key, 0))
+        self.set_hdr_format_0(digital.header_format_counter(self.access_key, 0, 2))
 
     def get_variable_adaptive_algorithm_0(self):
         return self.variable_adaptive_algorithm_0
@@ -311,7 +321,14 @@ class PLUTO_TRX_RA_2(gr.top_block, Qt.QWidget):
     def set_phase_bw(self, phase_bw):
         self.phase_bw = phase_bw
         self.digital_costas_loop_cc_0.set_loop_bandwidth(self.phase_bw)
+        self.digital_fll_band_edge_cc_0.set_loop_bandwidth(self.phase_bw)
         self.digital_symbol_sync_xx_0.set_loop_bandwidth(self.phase_bw)
+
+    def get_hdr_format_0(self):
+        return self.hdr_format_0
+
+    def set_hdr_format_0(self, hdr_format_0):
+        self.hdr_format_0 = hdr_format_0
 
     def get_hdr_format(self):
         return self.hdr_format
